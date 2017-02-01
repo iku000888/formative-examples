@@ -2,7 +2,9 @@
 figwheel_server.log
 pom.xml
 *jar
+/checkouts/
 /lib/
+/.cljs_rhino_repl/
 /classes/
 /out/
 /target/
