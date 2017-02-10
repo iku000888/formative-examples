@@ -21,24 +21,6 @@
 
 (defonce app-state (atom {:text "Hello world!"}))
 
-(defn reset-form []
-  (let [form-elem (.getElementById js/document "form")]
-    (some-> form-elem
-            .-firstChild
-            .remove)
-    (-> form-elem
-        (.appendChild (node (f/render-form (trivial-form)))))
-    (fd/handle-submit (trivial-form)
-                      form-elem
-                      #(js/alert "success!"))))
-
-
-(defn on-js-reload []
-  ;; optionally touch your app-state to force rerendering depending on
-  ;; your application
-  ;; (swap! app-state (constantly))
-  (reset-form))
-
 (defn show-problem []
   (fd/show-problems (trivial-form) (.getElementById js/document "form")
                     [{:keys ["やう゛ぁい"],
@@ -53,8 +35,50 @@
 (defn form-el []
   (fd/get-form-el (.getElementById js/document "form")))
 
+(defn remove-form []
+  (some-> (.getElementById js/document "form")
+          .-firstChild
+          .remove))
+
+(defn create-form []
+  (-> (.getElementById js/document "form")
+      (.appendChild (node (f/render-form (trivial-form))))))
+
+(defn do-handle-submit []
+  (fd/handle-submit
+   (trivial-form)
+   (.getElementById js/document "form")
+   #(js/alert "submit event!!!")
+   #_(js/alert "fail!!!")))
+
+(defn reset-form []
+  (let [form-elem (.getElementById js/document "form")]
+    (remove-form)
+    (create-form)
+    (do-handle-submit)
+    #_(some-> form-elem
+              .-firstChild
+              .remove)
+    #_(-> form-elem
+          (.appendChild (node (f/render-form (trivial-form)))))
+    #_(fd/handle-submit (trivial-form)
+                        form-elem
+                        #(js/alert "success!"))))
+
+
+(defn on-js-reload []
+  ;; optionally touch your app-state to force rerendering depending on
+  ;; your application
+  ;; (swap! app-state (constantly))
+  (reset-form))
+
+
+
 (reset-form)
 
 #_(sel (.getElementById js/document "form") ".problem.error" )
 #_(.querySelectorAll (.getElementById js/document "form") ".problem.error" )
 #_ (.-parentNode (fd/get-form-el (.getElementById js/document "form")))
+#_ (-> (array-seq (.querySelectorAll (.getElementById js/document "form") ".problem.error"))
+       first
+       )
