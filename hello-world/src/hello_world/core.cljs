@@ -1,5 +1,6 @@
 (ns hello-world.core
-  (:require [formative.core :as f]
+  (:require [crate.core :as c]
+            [formative.core :as f]
             [formative.dom :as fd])
   (:require-macros [dommy.macros :refer [node sel sel1]]))
 
@@ -42,29 +43,19 @@
 
 (defn create-form []
   (-> (.getElementById js/document "form")
-      (.appendChild (node (f/render-form (trivial-form))))))
+      (.appendChild (c/html (f/render-form (trivial-form))))))
 
 (defn do-handle-submit []
   (fd/handle-submit
    (trivial-form)
    (.getElementById js/document "form")
-   #(js/alert "submit event!!!")
-   #_(js/alert "fail!!!")))
+   #(js/alert "submit event!!!")))
 
 (defn reset-form []
   (let [form-elem (.getElementById js/document "form")]
     (remove-form)
     (create-form)
-    (do-handle-submit)
-    #_(some-> form-elem
-              .-firstChild
-              .remove)
-    #_(-> form-elem
-          (.appendChild (node (f/render-form (trivial-form)))))
-    #_(fd/handle-submit (trivial-form)
-                        form-elem
-                        #(js/alert "success!"))))
-
+    (do-handle-submit)))
 
 (defn on-js-reload []
   ;; optionally touch your app-state to force rerendering depending on
@@ -72,13 +63,4 @@
   ;; (swap! app-state (constantly))
   (reset-form))
 
-
-
 (reset-form)
-
-#_(sel (.getElementById js/document "form") ".problem.error" )
-#_(.querySelectorAll (.getElementById js/document "form") ".problem.error" )
-#_ (.-parentNode (fd/get-form-el (.getElementById js/document "form")))
-#_ (-> (array-seq (.querySelectorAll (.getElementById js/document "form") ".problem.error"))
-       first
-       )
