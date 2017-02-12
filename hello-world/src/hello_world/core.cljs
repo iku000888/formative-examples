@@ -2,7 +2,8 @@
   (:require [crate.core :as c]
             [formative.core :as f]
             [formative.dom :as fd])
-  (:require-macros [dommy.macros :refer [node sel sel1]]))
+  (:import [goog.i18n DateTimeFormat DateTimeParse]
+           goog.ui.InputDatePicker))
 
 (enable-console-print!)
 
@@ -13,9 +14,11 @@
             {:name :bar :type :select
              :options [["sss" "sss"]
                        ["fff" "fff"]
-                       ["ははあは" "べべべべ"]]}]
+                       ["ははあは" "べべべべ"]]}
+            {:name :date :id "date-picker-input" :type :date}]
    :validations [[:required [:foo]]
-                 [:max-length 3 [:foo]]]
+                 [:max-length 3 [:foo]]
+                 [:after #inst"2020" :date]]
    :renderer :bootstrap3-stacked})
 
 ;; define your app data so that it doesn't get over-written on reload
@@ -51,11 +54,18 @@
    (.getElementById js/document "form")
    #(js/alert "submit event!!!")))
 
+(defn render-date-picker []
+  (let [pat "yyyy-MM-dd"
+        fmt (DateTimeFormat. pat)
+        psr (DateTimeParse. pat)
+        idp (InputDatePicker. fmt psr)]
+    (.decorate idp (.getElementById js/document "date-picker-input"))))
+
 (defn reset-form []
-  (let [form-elem (.getElementById js/document "form")]
-    (remove-form)
-    (create-form)
-    (do-handle-submit)))
+  (remove-form)
+  (create-form)
+  (render-date-picker)
+  (do-handle-submit))
 
 (defn on-js-reload []
   ;; optionally touch your app-state to force rerendering depending on
