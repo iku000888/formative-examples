@@ -40,9 +40,16 @@
   (fd/get-form-el (.getElementById js/document "form")))
 
 (defn remove-form []
-  (some-> (.getElementById js/document "form")
-          .-firstChild
-          .remove))
+  (while (.-firstChild (.getElementById js/document "form"))
+    (.removeChild (.getElementById js/document "form")
+                  (.-firstChild (.getElementById js/document "form")))))
+
+
+#_(some->> (.getElementById js/document "form")
+           .-childNodes
+           array-seq
+           (map #(.remove %))
+           )
 
 (defn create-form []
   (-> (.getElementById js/document "form")
