@@ -15,7 +15,7 @@
              :options [["sss" "sss"]
                        ["fff" "fff"]
                        ["ははあは" "べべべべ"]]}
-            {:name :date :id "date-picker-input" :type :date}]
+            {:name :date :type :date}]
    :validations [[:required [:foo]]
                  [:max-length 3 [:foo]]
                  [:after #inst"2020" :date]]
@@ -66,7 +66,7 @@
         fmt (DateTimeFormat. pat)
         psr (DateTimeParse. pat)
         idp (InputDatePicker. fmt psr)]
-    (.decorate idp (.getElementById js/document "date-picker-input"))))
+    (.decorate idp (.getElementById js/document "field-date"))))
 
 (defn reset-form []
   (remove-form)
